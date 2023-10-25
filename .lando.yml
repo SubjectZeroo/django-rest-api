@@ -1,0 +1,69 @@
+name: django-api-rest
+services:
+  appserver:
+    type: python:3.11
+    # NOTE: this entire Landofile hard codes a path to a project we assume exists. If you have a different
+    # name for your project, you'll have to change all occurences of 'django_api_rest' to whatever your project is named.
+    command: su -c 'python /app/django_api_rest/manage.py runserver 0.0.0.0:8080 -v 3' www-data
+    build:
+      - cd /app && pip install --upgrade pip && pip install --trusted-host files.pythonhosted.org --trusted-host pypi.org --trusted-host pypi.python.org -r requirements.txt 
+    scanner: true
+    overrides:
+      ports:
+        - '8080:8080'
+      environment:
+        # NOTE: change this path to match your project name
+        PYTHONPATH: "/app/django_api_rest"
+        DJANGO_SETTINGS_MODULE: "django_api_rest.settings"
+    moreHttpPorts:
+      - '8080'
+  db:
+    # NOTE: the credentials below are the default for Lando, don't bother trying to change them
+    type: postgres:10
+    portforward: true
+    creds:
+      user: postgres
+      password: 
+      database: django-api-rest
+
+tooling:
+  # Any python service with a defined command (aka not running in cli only mode)
+  # Will also spin up a python cli container called `SERVICENAME_cli` (appserver_cli)
+  # in this example.
+  #
+  # This will allow you to run things like `lando pip install` without needing
+  # to `lando start` first. This is particularly needed for python based projects
+  # since you almost always need to run `pip install` before you can boot up your
+  # app successfully.
+  django-admin:
+    service: appserver
+    cmd: django-admin
+  pip:
+    service: appserver
+  easy_install:
+    service: appserver
+  pyvenv:
+    service: appserver
+  python:
+    service: appserver
+    cmd: python
+  manage:
+    service: appserver
+    # NOTE: change this path to match your project name
+    cmd: cd /app/django_api_rest && python manage.py
+  psql:
+    service: db
+    cmd: psql -U postgres
+  'db-import <file>':
+    service: :host
+    description: Imports a dump file into a database service
+    cmd: /helpers/sql-import.sh
+    options:
+      host:
+        description: The database service to use
+        default: db
+        alias:
+          - h
+      no-wipe:
+        description: Do not destroy the existing database before an import
+        boolean: true

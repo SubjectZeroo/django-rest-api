@@ -1,0 +1,9 @@
+# requirements.txt
+
+Django==4.2.5
+psycopg2
+djangorestframework
+markdown    
+django-filter   
+django-simple-history
+pillow
