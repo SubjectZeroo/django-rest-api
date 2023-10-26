@@ -14,12 +14,12 @@ services:
       environment:
         # NOTE: change this path to match your project name
         PYTHONPATH: "/app/django_api_rest"
-        DJANGO_SETTINGS_MODULE: "django_api_rest.settings"
+        DJANGO_SETTINGS_MODULE: "django_api_rest.settings.local"
     moreHttpPorts:
       - '8080'
   db:
     # NOTE: the credentials below are the default for Lando, don't bother trying to change them
-    type: postgres:10
+    type: postgres:14
     portforward: true
     creds:
       user: postgres
