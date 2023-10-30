@@ -7,3 +7,4 @@ markdown
 django-filter   
 django-simple-history
 pillow
+drf-yasg

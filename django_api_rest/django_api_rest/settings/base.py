@@ -48,9 +48,15 @@ LOCAL_APPS = [
 THIRD_APPS = [
     'rest_framework',
     'simple_history',
+    # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
+    'drf_yasg',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
+
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION': 'none'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
