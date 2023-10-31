@@ -47,6 +47,7 @@ LOCAL_APPS = [
 
 THIRD_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'simple_history',
     # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
     'drf_yasg',
