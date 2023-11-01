@@ -10,6 +10,7 @@ from apps.products.api.serializers.product_serializers import ProductSerializer
 
 class ProductViewSet(Authentication ,viewsets.ModelViewSet):
     serializer_class = ProductSerializer
+    
     # queryset = ProductSerializer.Meta.model.objects.filter(state = True)
     def get_queryset(self,pk=None):
         if pk is None:

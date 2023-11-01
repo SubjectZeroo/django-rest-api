@@ -8,3 +8,4 @@ django-filter
 django-simple-history
 pillow
 drf-yasg
+django-cors-headers

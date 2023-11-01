@@ -51,6 +51,7 @@ THIRD_APPS = [
     'simple_history',
     # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
     'drf_yasg',
+    'corsheaders',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -59,9 +60,10 @@ SWAGGER_SETTINGS = {
     'DOC_EXPANSION': 'none'
 }
 
-TOKEN_EXPIRED_AFTER_SECONDS = 10
+TOKEN_EXPIRED_AFTER_SECONDS = 900
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -134,3 +136,34 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS_ALLOWED_ALL_ORIGINS = False
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
+
+# CORS_ORIGIN_WHITE_LIST = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
+
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+
+# PROD ONLY
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
