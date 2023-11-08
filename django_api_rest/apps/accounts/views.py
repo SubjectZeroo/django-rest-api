@@ -1,5 +1,5 @@
 import json
-
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
@@ -8,33 +8,43 @@ from django.views.decorators.http import require_POST
 # from django.shortcuts import render
 # from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 # from rest_framework.permissions import IsAuthenticated
-# from rest_framework.views import APIView
-
+from rest_framework.views import APIView
+from rest_framework import permissions
+from rest_framework.response import Response
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator 
 # Create your views here.
 
-def get_csrf(request):
-    response = JsonResponse({'detail': 'CSRF cookie set'})
-    response['X-CSRFToken'] = get_token(request)
-    return response
-
-@require_POST
-def login_view(request):
-    data = json.loads(request.body)
-    username = data.get('username')
-    password = data.get('password')
+@method_decorator(csrf_protect, name='dispatch')
+class SignupView(APIView):
+    permission_classes = (permissions.AllowAny, )
     
-    if username is None or password is None:
-        return JsonResponse({'detail': 'Please provide username and password'}, status=400)
+    def post(self, request, format=None):
+        data = self.request.data
+        
+        username = data['username']
+        password = data['password']
+        re_password = data['re_password']
+        
+        if password == re_password:
+            if User.objects.filter(username=username).exists():
+                return Response({'error': 'Username already exists'})
+            else:
+                if len(password) < 6:
+                    return Response({'error': 'Password must be at least 6 characters'})
+                else:
+                    user = User.objects.create_user(usernamer=username, password=password)
+                    
+                    user.save()
+                    
+                    return Response({'success' 'User created successfully'})
+                    
+        else:
+            return Response({ 'error': 'Passwords do not match' })
+        
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class GetCSRFToken(APIView):
+    permission_classes = (permissions.AllowAny, )
+    def get(self, request, format=None):
+        return Response({'Success': 'CSRF cookie set'})
     
-    user = authenticate(username=username, password=password)
-    
-    if user is None:
-        return JsonResponse({'detail': 'Invalid credentials'})
-    login(request, user)
-    return JsonResponse({'detail': 'Succesfully logged in.'})
-    
-@ensure_csrf_cookie
-def session_view(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'isAuthenticated': False})
-    return JsonResponse({'isAthenticated': True})

@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include,re_path
+from django.urls import path, include, re_path
+from django.views.generic import  TemplateView
 # from django.urls import re_path
 
 from rest_framework import permissions
@@ -42,10 +43,15 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
-    path('logout/', Logout.as_view(), name = 'Logout'),
-    path('login/', Login.as_view(), name = 'Login'),
-    path('refresh-token/', UserToken.as_view(), name = 'refresh_token'),
+    # path('logout/', Logout.as_view(), name = 'Logout'),
+    # path('login/', Login.as_view(), name = 'Login'),
+    # path('refresh-token/', UserToken.as_view(), name = 'refresh_token'),
+    # path('user/', include('apps.users.api.urls')),
+    # path('products/',include('apps.products.api.routers')), 
+    # path('api/', include('apps.accounts.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('accounts/', include('apps.accounts.urls')),
     path('user/', include('apps.users.api.urls')),
-    path('products/',include('apps.products.api.routers')), 
-    path('api/', include('apps.accounts.urls')),
 ]
+
+# urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]
