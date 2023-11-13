@@ -17,6 +17,13 @@ services:
         DJANGO_SETTINGS_MODULE: "django_api_rest.settings.local"
     moreHttpPorts:
       - '8080'
+  node:
+    type: node:18
+    # scanner: false
+    # ports:
+    #   - 3009:3009
+    # build:
+    #   - npm install
   db:
     # NOTE: the credentials below are the default for Lando, don't bother trying to change them
     type: postgres:14
@@ -47,6 +54,15 @@ tooling:
   python:
     service: appserver
     cmd: python
+  install:
+    service: node
+    cmd: npm install
+  dev:
+    service: node
+    cmd: npm run dev
+  build:
+    service: node
+    cmd: npm run build
   manage:
     service: appserver
     # NOTE: change this path to match your project name
